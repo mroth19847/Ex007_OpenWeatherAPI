@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 public class TestMain {
 
     private static String URI = "http://api.openweathermap.org/data/2.5/";
-    private static String PATH = "weather";
+    private static String PATH = "weather"; //forecast
     private static String APPID = "39629fbcd91b663dd49aa9bd55a92848";
     public static void main(String[] args) {
         Client client = ClientBuilder.newClient();
