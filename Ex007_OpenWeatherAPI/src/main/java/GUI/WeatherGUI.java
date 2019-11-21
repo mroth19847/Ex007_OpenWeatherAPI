@@ -1,7 +1,12 @@
 package GUI;
 
+import BL.DestinationBL;
+import javax.swing.JOptionPane;
+
 public class WeatherGUI extends javax.swing.JFrame {
 
+    private DestinationBL bl = new DestinationBL();
+    
     public WeatherGUI() {
         initComponents();
     }
@@ -71,9 +76,19 @@ public class WeatherGUI extends javax.swing.JFrame {
         jPanel4.setLayout(new java.awt.GridLayout(1, 3, 5, 0));
 
         btAdd.setText("Add");
+        btAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAddActionPerformed(evt);
+            }
+        });
         jPanel4.add(btAdd);
 
         btEdit.setText("Edit");
+        btEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btEditActionPerformed(evt);
+            }
+        });
         jPanel4.add(btEdit);
 
         btDelete.setText("Delete");
@@ -152,11 +167,36 @@ public class WeatherGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddActionPerformed
+        DestinationDialog dlg = new DestinationDialog(this, true, null);
+        dlg.setVisible(true);
+        if(dlg.isOk()){
+            try {
+                bl.add(dlg.getNewDest());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btAddActionPerformed
+
+    private void btEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditActionPerformed
+        
+        DestinationDialog dlg = new DestinationDialog(this, true, null);
+        dlg.setVisible(true);
+        if(dlg.isOk()){
+            try {
+                bl.add(dlg.getNewDest());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btEditActionPerformed
+
 
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
