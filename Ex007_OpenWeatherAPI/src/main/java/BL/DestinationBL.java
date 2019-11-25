@@ -59,4 +59,13 @@ public class DestinationBL extends AbstractListModel{
         
         fireContentsChanged(this, 0, destList.size()-1);
     }
+
+    public ArrayList<Destination> getDestList() {
+        return destList;
+    }
+
+    public void setDestList(ArrayList<Destination> destList) {
+        this.destList = destList;
+    }
+     
 }

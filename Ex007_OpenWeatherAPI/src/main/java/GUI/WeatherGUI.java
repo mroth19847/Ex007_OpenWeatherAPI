@@ -2,16 +2,24 @@ package GUI;
 
 import BL.Destination;
 import BL.DestinationBL;
+import XML.XMLAccess;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.jdom2.JDOMException;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
-    private DestinationBL bl = new DestinationBL();
+    private DestinationBL bl;
 
     public WeatherGUI() {
         initComponents();
+        try {
+            bl = XMLAccess.importXML();
+        } catch (Exception ex) {
+            bl = new DestinationBL();
+        }
         DestinationList.setModel(bl);
 
     }
@@ -38,6 +46,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
@@ -218,6 +231,14 @@ public class WeatherGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btDeleteActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            XMLAccess.exportXML(bl);
+        } catch (IOException ex) {
+            Logger.getLogger(WeatherGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     public static void main(String args[]) {
         try {
