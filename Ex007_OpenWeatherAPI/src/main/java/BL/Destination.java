@@ -17,5 +17,18 @@ public class Destination {
     public String getZip() {
         return zip;
     }
+
+    @Override
+    public String toString() {
+        if(name.equals("")){
+            return zip;
+        }
+        else if (zip.equals("")){
+            return name;
+        }
+        return zip + " " + name;
+    }
+    
+    
     
 }

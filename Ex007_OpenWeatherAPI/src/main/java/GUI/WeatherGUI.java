@@ -9,6 +9,8 @@ public class WeatherGUI extends javax.swing.JFrame {
     
     public WeatherGUI() {
         initComponents();
+        DestinationList.setModel(bl);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -22,7 +24,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         tfDest = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        DestinationList = new javax.swing.JList<>();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -59,12 +61,12 @@ public class WeatherGUI extends javax.swing.JFrame {
 
         tfDest.setName("tfZip"); // NOI18N
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        DestinationList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(DestinationList);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Saved Destinations");
@@ -165,6 +167,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddActionPerformed
@@ -218,6 +221,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<String> DestinationList;
     private javax.swing.JButton btAdd;
     private javax.swing.JButton btDelete;
     private javax.swing.JButton btEdit;
@@ -227,7 +231,6 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
