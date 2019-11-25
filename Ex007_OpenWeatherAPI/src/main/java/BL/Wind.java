@@ -1,20 +1,28 @@
-package BL;
+package htl.loibner.restclientintro.bl;
 
+/**
+ *
+ * @author lb
+ */
 public class Wind {
 
-    private double speed;
-    private double deg;
+    private float speed;
+    private int deg;
 
-    public Wind(double speed, double deg) {
-        this.speed = speed;
-        this.deg = deg;
+    public float getSpeed() {
+        return speed;
     }
 
-    public double getDeg() {
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public int getDeg() {
         return deg;
     }
 
-    public double getSpeed() {
-        return speed;
+    public void setDeg(int deg) {
+        this.deg = deg;
     }
+
 }
