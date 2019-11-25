@@ -1,10 +1,10 @@
-package htl.loibner.restclientintro.bl;
+package BL;
 
 /**
  *
  * @author lb
  */
-public class Wheater {
+public class Weather {
 
     private int id;
     private String main;

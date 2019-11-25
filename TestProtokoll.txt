@@ -1,0 +1,24 @@
+Test Protocol
+
+Test Number: 1
+User Story: 1
+Result: Positive
+Summary: I added several destinations, with both zip and name, only zip,
+	 only name and with both attributes empty. I got always the
+	 expected result and everything worked.
+________________________________________________________________________
+
+Test Number: 2
+User Story: 2
+Result: Positive
+Summary: I edited and deleted destinations I added and both functions
+	 worked as expected
+________________________________________________________________________
+
+Test Number: 3
+User Story: 3
+Result: Positive
+Summary: When I close the window, the destination list is stored in a
+	 xml document and if I open it again the destinations are loaded
+	 into the program.
+________________________________________________________________________

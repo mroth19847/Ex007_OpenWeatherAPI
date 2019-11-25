@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import org.jdom2.JDOMException;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
@@ -58,7 +57,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 546, Short.MAX_VALUE)
+            .addGap(0, 495, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,7 +92,7 @@ public class WeatherGUI extends javax.swing.JFrame {
 
         jPanel4.setLayout(new java.awt.GridLayout(1, 3, 5, 0));
 
-        btAdd.setText("Add");
+        btAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-plus-64.png"))); // NOI18N
         btAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btAddActionPerformed(evt);
@@ -101,7 +100,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         });
         jPanel4.add(btAdd);
 
-        btEdit.setText("Edit");
+        btEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-bleistift-64.png"))); // NOI18N
         btEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btEditActionPerformed(evt);
@@ -109,7 +108,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         });
         jPanel4.add(btEdit);
 
-        btDelete.setText("Delete");
+        btDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-löschen-64.png"))); // NOI18N
         btDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btDeleteActionPerformed(evt);
@@ -135,7 +134,7 @@ public class WeatherGUI extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(jLabel4))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(

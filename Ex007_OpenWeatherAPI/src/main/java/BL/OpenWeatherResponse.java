@@ -1,4 +1,5 @@
-package htl.loibner.restclientintro.bl;
+package BL;
+
 
 import java.util.List;
 
@@ -6,10 +7,10 @@ import java.util.List;
  *
  * @author lb
  */
-public class OpenWheaterResponse {
+public class OpenWeatherResponse {
 
     private Coord coord;
-    private List<Wheater> weather;
+    private List<Weather> weather;
     private String base;
     private Main main;
     private int visibility;
@@ -118,11 +119,11 @@ public class OpenWheaterResponse {
         this.coord = coord;
     }
 
-    public List<Wheater> getWeather() {
+    public List<Weather> getWeather() {
         return weather;
     }
 
-    public void setWeather(List<Wheater> weather) {
+    public void setWeather(List<Weather> weather) {
         this.weather = weather;
     }
 

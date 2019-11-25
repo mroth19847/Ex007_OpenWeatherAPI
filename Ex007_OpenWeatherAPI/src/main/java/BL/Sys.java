@@ -1,4 +1,4 @@
-package htl.loibner.restclientintro.bl;
+package BL;
 
 /**
  *
