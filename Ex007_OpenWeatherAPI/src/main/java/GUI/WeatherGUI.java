@@ -1,12 +1,15 @@
 package GUI;
 
+import BL.Destination;
 import BL.DestinationBL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
     private DestinationBL bl = new DestinationBL();
-    
+
     public WeatherGUI() {
         initComponents();
         DestinationList.setModel(bl);
@@ -94,6 +97,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         jPanel4.add(btEdit);
 
         btDelete.setText("Delete");
+        btDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDeleteActionPerformed(evt);
+            }
+        });
         jPanel4.add(btDelete);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -173,7 +181,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     private void btAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddActionPerformed
         DestinationDialog dlg = new DestinationDialog(this, true, null);
         dlg.setVisible(true);
-        if(dlg.isOk()){
+        if (dlg.isOk()) {
             try {
                 bl.add(dlg.getNewDest());
             } catch (Exception ex) {
@@ -183,18 +191,33 @@ public class WeatherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btAddActionPerformed
 
     private void btEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditActionPerformed
-        
-        DestinationDialog dlg = new DestinationDialog(this, true, null);
-        dlg.setVisible(true);
-        if(dlg.isOk()){
-            try {
-                bl.add(dlg.getNewDest());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
+        if (DestinationList.getSelectedIndex() < 0) {
+            JOptionPane.showMessageDialog(null, "Select an entry!");
+        } else {
+            Destination selected = (Destination) bl.getElementAt(DestinationList.getSelectedIndex());
+            DestinationDialog dlg = new DestinationDialog(this, true, selected);
+            dlg.setVisible(true);
+            if (dlg.isOk()) {
+                try {
+                    bl.edit(DestinationList.getSelectedIndex(), dlg.getNewDest());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         }
     }//GEN-LAST:event_btEditActionPerformed
 
+    private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed
+        if (DestinationList.getSelectedIndex() < 0) {
+            JOptionPane.showMessageDialog(null, "Select an entry!");
+        } else {
+            Destination selected = (Destination) bl.getElementAt(DestinationList.getSelectedIndex());
+            int reply = JOptionPane.showConfirmDialog(null, "Do you really want to delete the following entry: "+selected.toString(),"Confirm", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                bl.delete(DestinationList.getSelectedIndex());
+            }
+        }
+    }//GEN-LAST:event_btDeleteActionPerformed
 
     public static void main(String args[]) {
         try {

@@ -53,9 +53,8 @@ public class DestinationBL extends AbstractListModel{
      * @param idx - The index of the object which should be deleted.
      * @throws Exception - If the index is not found, an Exception is thrown.
      */
-    public void delete(int idx) throws Exception{
-        if(idx < 0 || idx >= destList.size()) throw new Exception("No Destination selected!");
-        
+    public void delete(int idx){
+
         destList.remove(idx);
         
         fireContentsChanged(this, 0, destList.size()-1);
