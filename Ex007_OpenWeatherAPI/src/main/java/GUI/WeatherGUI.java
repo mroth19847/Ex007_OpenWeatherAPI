@@ -2,11 +2,16 @@ package GUI;
 
 import BL.Destination;
 import BL.DestinationBL;
+import REST.OpenWeatherAPIHandler;
 import XML.XMLAccess;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
@@ -14,6 +19,7 @@ public class WeatherGUI extends javax.swing.JFrame {
 
     public WeatherGUI() {
         initComponents();
+
         try {
             bl = XMLAccess.importXML();
         } catch (Exception ex) {
@@ -28,6 +34,8 @@ public class WeatherGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        taOutput = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         tfZip = new javax.swing.JTextField();
@@ -36,8 +44,8 @@ public class WeatherGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         DestinationList = new javax.swing.JList<>();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btRun = new javax.swing.JButton();
+        btRundSave = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         btAdd = new javax.swing.JButton();
         btEdit = new javax.swing.JButton();
@@ -53,15 +61,25 @@ public class WeatherGUI extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
+        taOutput.setColumns(20);
+        taOutput.setRows(5);
+        jScrollPane2.setViewportView(taOutput);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 536, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Input", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
@@ -81,18 +99,33 @@ public class WeatherGUI extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        DestinationList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                DestinationListValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(DestinationList);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Saved Destinations");
 
-        jButton1.setText("Run");
+        btRun.setText("Run");
+        btRun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRunActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Run & Save Destination");
+        btRundSave.setText("Run & Save Destination");
+        btRundSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRundSaveActionPerformed(evt);
+            }
+        });
 
         jPanel4.setLayout(new java.awt.GridLayout(1, 3, 5, 0));
 
-        btAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-plus-64.png"))); // NOI18N
+        btAdd.setText("Add");
         btAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btAddActionPerformed(evt);
@@ -100,7 +133,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         });
         jPanel4.add(btAdd);
 
-        btEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-bleistift-64.png"))); // NOI18N
+        btEdit.setText("Change");
         btEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btEditActionPerformed(evt);
@@ -108,7 +141,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         });
         jPanel4.add(btEdit);
 
-        btDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/icons8-löschen-64.png"))); // NOI18N
+        btDelete.setText("Delete");
         btDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btDeleteActionPerformed(evt);
@@ -124,8 +157,8 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tfZip, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btRundSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tfDest, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -149,15 +182,15 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfDest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btRun)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(btRundSave)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(4, 4, 4)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -224,7 +257,7 @@ public class WeatherGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Select an entry!");
         } else {
             Destination selected = (Destination) bl.getElementAt(DestinationList.getSelectedIndex());
-            int reply = JOptionPane.showConfirmDialog(null, "Do you really want to delete the following entry: "+selected.toString(),"Confirm", JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(null, "Do you really want to delete the following entry: " + selected.toString(), "Confirm", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 bl.delete(DestinationList.getSelectedIndex());
             }
@@ -238,6 +271,36 @@ public class WeatherGUI extends javax.swing.JFrame {
             Logger.getLogger(WeatherGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void DestinationListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_DestinationListValueChanged
+        if (DestinationList.getSelectedIndex() < 0) {
+            JOptionPane.showMessageDialog(null, "Select an entry!");
+        } else {
+            Destination selected = (Destination) bl.getElementAt(DestinationList.getSelectedIndex());
+            tfDest.setText(selected.getName());
+            tfZip.setText(selected.getZip());
+        }
+    }//GEN-LAST:event_DestinationListValueChanged
+
+    private void btRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunActionPerformed
+        if(tfZip.getText().equals("")&&tfDest.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "You cannot leave both fields empty!");
+        } else {
+            Destination dest = new Destination(tfDest.getText(), tfZip.getText());
+            String json = OpenWeatherAPIHandler.getJSONString(dest, false);
+            taOutput.append(json);
+        }
+    }//GEN-LAST:event_btRunActionPerformed
+
+    private void btRundSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRundSaveActionPerformed
+        Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
+        try {
+            bl.add(newDest);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+
+    }//GEN-LAST:event_btRundSaveActionPerformed
 
     public static void main(String args[]) {
         try {
@@ -268,8 +331,8 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JButton btAdd;
     private javax.swing.JButton btDelete;
     private javax.swing.JButton btEdit;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btRun;
+    private javax.swing.JButton btRundSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -278,6 +341,8 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea taOutput;
     private javax.swing.JTextField tfDest;
     private javax.swing.JTextField tfZip;
     // End of variables declaration//GEN-END:variables

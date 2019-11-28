@@ -23,9 +23,9 @@ public class TestMain {
         String jsonString = r.readEntity(String.class);
         
         System.out.println(jsonString);
-//        Gson gson = new Gson();
-//        WeatherObject wo = gson.fromJson(jsonString, WeatherObject.class);
-//        System.out.println(wo);
+        Gson gson = new Gson();
+        OpenWeatherResponse res = gson.fromJson(jsonString, OpenWeatherResponse.class);
+        System.out.println(res);
     }
 
 }

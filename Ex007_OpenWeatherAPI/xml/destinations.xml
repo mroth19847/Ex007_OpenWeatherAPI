@@ -8,4 +8,8 @@
     <Name>Bad Mitterndorf</Name>
     <Zip>8983</Zip>
   </Destination>
+  <Destination>
+    <Name>Bad Gleichenberg</Name>
+    <Zip />
+  </Destination>
 </DestinationList>
