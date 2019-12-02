@@ -1,6 +1,7 @@
 package BL;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,6 +23,15 @@ public class OpenWeatherResponse {
     private int id;
     private String name;
     private int cod;
+    private LocalDateTime date;
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
 
     public String getBase() {
         return base;
