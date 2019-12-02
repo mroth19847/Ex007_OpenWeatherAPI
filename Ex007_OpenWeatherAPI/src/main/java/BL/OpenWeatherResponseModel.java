@@ -18,6 +18,10 @@ public class OpenWeatherResponseModel extends AbstractTableModel{
     public int getColumnCount() {
         return colNames.length;
     }
+    
+    public OpenWeatherResponse getResponseAt(int idx){
+        return owrList.get(idx);
+    }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {

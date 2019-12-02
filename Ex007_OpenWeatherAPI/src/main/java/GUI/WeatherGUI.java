@@ -4,12 +4,16 @@ import BL.Destination;
 import BL.DestinationBL;
 import BL.OpenWeatherResponse;
 import BL.OpenWeatherResponseModel;
+import BL.WeatherCellRenderer;
+import BL.WeatherModel;
 import REST.OpenWeatherAPIHandler;
 import XML.XMLAccess;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
@@ -19,12 +23,25 @@ public class WeatherGUI extends javax.swing.JFrame {
     public WeatherGUI() {
         initComponents();
         ResponseTable.setModel(tableM);
+        WeatherTable.setRowHeight(35);
+        WeatherTable.setDefaultRenderer(Object.class, new WeatherCellRenderer());
         try {
             bl = XMLAccess.importXML();
         } catch (Exception ex) {
             bl = new DestinationBL();
         }
         DestinationList.setModel(bl);
+
+        ResponseTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    if(ResponseTable.getSelectedRow()>-1){
+                        updateGUI(tableM.getResponseAt(ResponseTable.getSelectedRow()));
+                    }
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -39,11 +56,13 @@ public class WeatherGUI extends javax.swing.JFrame {
         tfPressure = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         tfHumidity = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        tfWind = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
-        ResponseTable1 = new javax.swing.JTable();
+        ResponseTable = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        ResponseTable = new javax.swing.JTable();
+        WeatherTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         tfZip = new javax.swing.JTextField();
@@ -78,6 +97,8 @@ public class WeatherGUI extends javax.swing.JFrame {
 
         jLabel9.setText("Humidity:");
 
+        jLabel10.setText("Wind:");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -85,6 +106,7 @@ public class WeatherGUI extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE))
@@ -92,7 +114,8 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tfTemperature)
                     .addComponent(tfPressure)
-                    .addComponent(tfHumidity))
+                    .addComponent(tfHumidity)
+                    .addComponent(tfWind, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -110,10 +133,14 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfHumidity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(tfWind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
-        ResponseTable1.setModel(new javax.swing.table.DefaultTableModel(
+        ResponseTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -124,11 +151,11 @@ public class WeatherGUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(ResponseTable1);
+        jScrollPane4.setViewportView(ResponseTable);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Weather", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
 
-        ResponseTable.setModel(new javax.swing.table.DefaultTableModel(
+        WeatherTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -139,7 +166,7 @@ public class WeatherGUI extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane2.setViewportView(ResponseTable);
+        jScrollPane2.setViewportView(WeatherTable);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -401,13 +428,14 @@ public class WeatherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_DestinationListValueChanged
 
     private void btRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunActionPerformed
-        if(tfZip.getText().equals("")&&tfDest.getText().equals("")){
+        if (tfZip.getText().equals("") && tfDest.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "You cannot leave both fields empty!");
         } else {
             Destination dest = new Destination(tfDest.getText(), tfZip.getText());
             OpenWeatherResponse res = OpenWeatherAPIHandler.getJSONString(dest, cbForecast.isSelected());
             tableM.add(res);
-            
+            updateGUI(res);
+
         }
     }//GEN-LAST:event_btRunActionPerformed
 
@@ -417,19 +445,21 @@ public class WeatherGUI extends javax.swing.JFrame {
             bl.add(newDest);
             OpenWeatherResponse res = OpenWeatherAPIHandler.getJSONString(newDest, cbForecast.isSelected());
             tableM.add(res);
+            updateGUI(res);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
 
     }//GEN-LAST:event_btRundSaveActionPerformed
 
-    private void updateGUI(OpenWeatherResponse res){
-       tfTemperature.setText(res.getMain().getTemp()+"");
-       tfPressure.setText(res.getMain().getPressure()+"");
-       tfHumidity.setText(res.getMain().getHumidity()+"");
-
+    private void updateGUI(OpenWeatherResponse res) {
+        tfTemperature.setText(res.getMain().getTemp() + " K");
+        tfPressure.setText(res.getMain().getPressure() + " hpa");
+        tfHumidity.setText(res.getMain().getHumidity() + "%");
+        tfWind.setText(res.getWind().getDeg() + "@" + res.getWind().getSpeed());
+        WeatherTable.setModel(new WeatherModel(res.getWeather()));
     }
-    
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -457,7 +487,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> DestinationList;
     private javax.swing.JTable ResponseTable;
-    private javax.swing.JTable ResponseTable1;
+    private javax.swing.JTable WeatherTable;
     private javax.swing.JButton btAdd;
     private javax.swing.JButton btDelete;
     private javax.swing.JButton btEdit;
@@ -465,6 +495,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JButton btRundSave;
     private javax.swing.JCheckBox cbForecast;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -483,6 +514,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JTextField tfHumidity;
     private javax.swing.JTextField tfPressure;
     private javax.swing.JTextField tfTemperature;
+    private javax.swing.JTextField tfWind;
     private javax.swing.JTextField tfZip;
     // End of variables declaration//GEN-END:variables
 

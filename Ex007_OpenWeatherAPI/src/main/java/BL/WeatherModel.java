@@ -29,7 +29,7 @@ public class WeatherModel extends AbstractTableModel{
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return wList.get(rowIndex);
     }
 
 }
