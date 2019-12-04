@@ -30,6 +30,7 @@ public class WeatherCellRenderer implements TableCellRenderer {
                 case 2:
                     URL url = new URL("http://openweathermap.org/img/w/"+w.getIcon()+".png");
                     Image image = ImageIO.read(url);
+                    label.setHorizontalAlignment(JLabel.CENTER);
                     label.setIcon(new ImageIcon(image));
                     break;
 

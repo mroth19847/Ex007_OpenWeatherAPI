@@ -12,4 +12,40 @@
     <Name>Bad Gleichenberg</Name>
     <Zip />
   </Destination>
+  <Destination>
+    <Name>New York</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Dubai</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Honolulu</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Leibnitz</Name>
+    <Zip>8430</Zip>
+  </Destination>
+  <Destination>
+    <Name>Arnfels</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Los Angeles</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Windhoek</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Toronto</Name>
+    <Zip />
+  </Destination>
+  <Destination>
+    <Name>Peking</Name>
+    <Zip />
+  </Destination>
 </DestinationList>

@@ -105,8 +105,8 @@ public class DestinationDialog extends javax.swing.JDialog {
 
     
     private void btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveActionPerformed
-        if(tfZip.getText().equals("")&&tfDest.getText().equals("")){
-            JOptionPane.showMessageDialog(null, "You can't leave both fields empty!");
+        if(tfDest.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "You can't leave the Name field empty!");
         }
         newDest = new Destination(tfDest.getText(), tfZip.getText());
         ok = true;

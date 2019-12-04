@@ -7,8 +7,8 @@ import javax.swing.table.AbstractTableModel;
 public class OpenWeatherResponseModel extends AbstractTableModel{
 
     private ArrayList<OpenWeatherResponse> owrList = new ArrayList<>();
-    private String[] colNames = new String[]{"Destination", "Date"};
-    
+    private String[] colNames = new String[]{"Destination", "State", "Date"};
+
     @Override
     public int getRowCount() {
         return owrList.size();
@@ -28,7 +28,8 @@ public class OpenWeatherResponseModel extends AbstractTableModel{
         DateTimeFormatter ldtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         switch(columnIndex){
             case 0: return owrList.get(rowIndex).getName();
-            case 1: return owrList.get(rowIndex).getDate().format(ldtf);
+            case 1: return owrList.get(rowIndex).getSys().getCountry();
+            case 2: return owrList.get(rowIndex).getDate().format(ldtf);
         }
         return "ERROR";
     }

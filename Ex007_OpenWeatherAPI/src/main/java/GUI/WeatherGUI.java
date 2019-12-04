@@ -8,17 +8,20 @@ import BL.WeatherCellRenderer;
 import BL.WeatherModel;
 import REST.OpenWeatherAPIHandler;
 import XML.XMLAccess;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
     private DestinationBL bl;
     private OpenWeatherResponseModel tableM = new OpenWeatherResponseModel();
+    private boolean forecastMode;
 
     public WeatherGUI() {
         initComponents();
@@ -64,9 +67,9 @@ public class WeatherGUI extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         WeatherTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        lbZip = new javax.swing.JLabel();
         tfZip = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        lbDest = new javax.swing.JLabel();
         tfDest = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         DestinationList = new javax.swing.JList<>();
@@ -74,11 +77,12 @@ public class WeatherGUI extends javax.swing.JFrame {
         btRun = new javax.swing.JButton();
         btRundSave = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        cbForecast = new javax.swing.JCheckBox();
         btAdd = new javax.swing.JButton();
         btEdit = new javax.swing.JButton();
         btDelete = new javax.swing.JButton();
+        btRunAll = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btChangeMode = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -87,7 +91,7 @@ public class WeatherGUI extends javax.swing.JFrame {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Current Weather", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Details", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
 
@@ -95,9 +99,17 @@ public class WeatherGUI extends javax.swing.JFrame {
 
         jLabel8.setText("Pressure:");
 
+        tfTemperature.setEditable(false);
+
+        tfPressure.setEditable(false);
+
         jLabel9.setText("Humidity:");
 
+        tfHumidity.setEditable(false);
+
         jLabel10.setText("Wind:");
+
+        tfWind.setEditable(false);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -112,7 +124,7 @@ public class WeatherGUI extends javax.swing.JFrame {
                     .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfTemperature)
+                    .addComponent(tfTemperature, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                     .addComponent(tfPressure)
                     .addComponent(tfHumidity)
                     .addComponent(tfWind, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -125,19 +137,19 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(tfTemperature, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(7, 7, 7)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(tfPressure, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfHumidity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel9)
+                    .addComponent(tfHumidity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(tfWind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(tfPressure, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         ResponseTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -190,12 +202,12 @@ public class WeatherGUI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -203,21 +215,21 @@ public class WeatherGUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Input", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel2.setText("Zip");
+        lbZip.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lbZip.setText("Zip");
 
         tfZip.setName("tfZip"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel3.setText("Destination Name");
+        lbDest.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lbDest.setText("Destination Name");
 
         tfDest.setName("tfZip"); // NOI18N
 
@@ -252,8 +264,6 @@ public class WeatherGUI extends javax.swing.JFrame {
 
         jPanel4.setLayout(new java.awt.GridLayout(1, 3, 5, 0));
 
-        cbForecast.setText("Forecast");
-
         btAdd.setText("Add");
         btAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -272,6 +282,13 @@ public class WeatherGUI extends javax.swing.JFrame {
         btDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btDeleteActionPerformed(evt);
+            }
+        });
+
+        btRunAll.setText("Run All Destinations");
+        btRunAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRunAllActionPerformed(evt);
             }
         });
 
@@ -297,51 +314,56 @@ public class WeatherGUI extends javax.swing.JFrame {
                         .addComponent(btDelete))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbForecast)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
+                            .addComponent(lbDest)
+                            .addComponent(lbZip)
                             .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btRunAll, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(jLabel2)
+                .addComponent(lbZip)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfZip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addComponent(lbDest)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfDest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btRun)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btRundSave)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbForecast)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btRunAll)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(73, 73, 73)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btDelete)
+                        .addComponent(btEdit)
+                        .addComponent(btAdd)))
+                .addGap(1277, 1277, 1277))
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Weather App");
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        btChangeMode.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btChangeMode.setText("Change to Forecast Mode");
+        btChangeMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btChangeModeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -352,6 +374,10 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btChangeMode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,8 +386,10 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(0, 11, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btChangeMode, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -432,10 +460,9 @@ public class WeatherGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "You cannot leave both fields empty!");
         } else {
             Destination dest = new Destination(tfDest.getText(), tfZip.getText());
-            OpenWeatherResponse res = OpenWeatherAPIHandler.getJSONString(dest, cbForecast.isSelected());
+            OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
             tableM.add(res);
             updateGUI(res);
-
         }
     }//GEN-LAST:event_btRunActionPerformed
 
@@ -443,7 +470,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
         try {
             bl.add(newDest);
-            OpenWeatherResponse res = OpenWeatherAPIHandler.getJSONString(newDest, cbForecast.isSelected());
+            OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(newDest);
             tableM.add(res);
             updateGUI(res);
         } catch (Exception ex) {
@@ -452,12 +479,89 @@ public class WeatherGUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btRundSaveActionPerformed
 
+    private void btChangeModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btChangeModeActionPerformed
+        if(!forecastMode){
+            forecastMode = true;
+            btChangeMode.setText("Change to Normal Mode");
+            lbZip.setVisible(false);
+            tfZip.setVisible(false);
+            btRunAll.setVisible(false);
+            lbDest.setText("Travel Day (dd.MM.yyyy)");
+            btRun.setText("Run with Travel Day");
+            btRundSave.setText("Run without Travel Day");
+            jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Forecast", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14)));
+        } else {
+            forecastMode = false;
+            btChangeMode.setText("Change to Forecast Mode");
+            lbZip.setVisible(true);
+            tfZip.setVisible(true);
+            btRunAll.setVisible(true);
+            lbDest.setText("Destination Name");
+            btRun.setText("Run");
+            btRundSave.setText("Run & Save Destination");
+            jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Current Weather", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14)));
+        }
+        tfTemperature.setBackground(new Color(240,240,240));
+        tfTemperature.setForeground(Color.BLACK);
+        tfHumidity.setBackground(new Color(240,240,240));
+        tfHumidity.setForeground(Color.BLACK);
+        tfWind.setBackground(new Color(240,240,240));
+        tfWind.setForeground(Color.BLACK);
+        tableM = new OpenWeatherResponseModel();
+        ResponseTable.setModel(tableM);
+        WeatherTable.setModel(new DefaultTableModel());
+    }//GEN-LAST:event_btChangeModeActionPerformed
+
+    private void btRunAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunAllActionPerformed
+        for (Destination dest : bl.getDestList()) {
+            OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
+            tableM.add(res);
+            updateGUI(res);
+        }
+    }//GEN-LAST:event_btRunAllActionPerformed
+
     private void updateGUI(OpenWeatherResponse res) {
-        tfTemperature.setText(res.getMain().getTemp() + " K");
+        tfTemperature.setText(String.format("%.2f °C",res.getMain().getTemp()));
         tfPressure.setText(res.getMain().getPressure() + " hpa");
         tfHumidity.setText(res.getMain().getHumidity() + "%");
-        tfWind.setText(res.getWind().getDeg() + "@" + res.getWind().getSpeed());
+        tfWind.setText(res.getWind().getDeg() + "° @ " + res.getWind().getSpeed() +"m/s");
         WeatherTable.setModel(new WeatherModel(res.getWeather()));
+        if(res.getMain().getTemp()<10){
+            tfTemperature.setBackground(Color.BLUE);
+            tfTemperature.setForeground(Color.WHITE);
+        } else if(res.getMain().getTemp()<18){
+            tfTemperature.setBackground(Color.CYAN);
+            tfTemperature.setForeground(Color.BLACK);
+        } else if(res.getMain().getTemp()>35){
+            tfTemperature.setBackground(Color.RED);
+            tfTemperature.setForeground(Color.WHITE);
+        } else if(res.getMain().getTemp()>25){
+            tfTemperature.setBackground(Color.ORANGE);
+            tfTemperature.setForeground(Color.BLACK);
+        } else {
+            tfTemperature.setBackground(Color.GREEN);
+            tfTemperature.setForeground(Color.BLACK);
+        }
+        if(res.getMain().getHumidity()>75){
+            tfHumidity.setBackground(Color.BLUE);
+            tfHumidity.setForeground(Color.WHITE);
+        } else if(res.getMain().getHumidity()>65){
+            tfHumidity.setBackground(Color.CYAN);
+            tfHumidity.setForeground(Color.BLACK);
+        } else {
+            tfHumidity.setBackground(Color.ORANGE);
+            tfHumidity.setForeground(Color.BLACK);
+        }
+        if(res.getWind().getSpeed()<=5){
+            tfWind.setBackground(Color.GREEN);
+            tfWind.setForeground(Color.BLACK);
+        } else if(res.getWind().getSpeed()<=13){
+            tfWind.setBackground(Color.ORANGE);
+            tfWind.setForeground(Color.BLACK);
+        } else {
+            tfWind.setBackground(Color.RED);
+            tfWind.setForeground(Color.WHITE); 
+        }
     }
 
     public static void main(String args[]) {
@@ -489,15 +593,14 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JTable ResponseTable;
     private javax.swing.JTable WeatherTable;
     private javax.swing.JButton btAdd;
+    private javax.swing.JButton btChangeMode;
     private javax.swing.JButton btDelete;
     private javax.swing.JButton btEdit;
     private javax.swing.JButton btRun;
+    private javax.swing.JButton btRunAll;
     private javax.swing.JButton btRundSave;
-    private javax.swing.JCheckBox cbForecast;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -510,6 +613,8 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lbDest;
+    private javax.swing.JLabel lbZip;
     private javax.swing.JTextField tfDest;
     private javax.swing.JTextField tfHumidity;
     private javax.swing.JTextField tfPressure;

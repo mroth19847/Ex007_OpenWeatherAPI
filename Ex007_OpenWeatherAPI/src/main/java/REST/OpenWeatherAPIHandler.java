@@ -14,31 +14,21 @@ public class OpenWeatherAPIHandler {
     private static String URI = "http://api.openweathermap.org/data/2.5/";
     private static String APPID = "39629fbcd91b663dd49aa9bd55a92848";
 
-    public static OpenWeatherResponse getJSONString(Destination dest, boolean forecast) {
+    public static OpenWeatherResponse getCurrentInformation(Destination dest) {
         Client client = ClientBuilder.newClient();
-        String PATH = "weather", param1, param2;
-        if (dest.getName().equals("")) {
-            param1 = "zip";
-            param2 = dest.getZip();
-        } else {
-
-            param1 = "q";
-            param2 = dest.getName();
-        }
-        if (forecast) {
-            PATH = "forecast";
-        }
         Response r = client.target(URI)
-                .path(PATH)
+                .path("weather")
                 .queryParam("APPID", APPID)
-                .queryParam(param1, param2)
+                .queryParam("q", dest.getName())
                 .request(MediaType.APPLICATION_JSON)
                 .get();
         Gson gson = new Gson();
         String json = r.readEntity(String.class);
-        System.out.println(json);
         OpenWeatherResponse res = gson.fromJson(json, OpenWeatherResponse.class);
         res.setDate(LocalDateTime.now());
+        res.getMain().setTemp(res.getMain().getTemp()-273.15f);
+        res.getMain().setTemp_max(res.getMain().getTemp_max()-273.15f);
+        res.getMain().setTemp_min(res.getMain().getTemp_min()-273.15f);
         return res;
     }
 }
