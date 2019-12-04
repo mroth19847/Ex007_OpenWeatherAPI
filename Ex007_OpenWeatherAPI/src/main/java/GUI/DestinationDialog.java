@@ -1,4 +1,3 @@
-
 package GUI;
 
 import BL.Destination;
@@ -8,17 +7,16 @@ public class DestinationDialog extends javax.swing.JDialog {
 
     private Destination newDest;
     private boolean ok;
-    
+
     public DestinationDialog(java.awt.Frame parent, boolean modal, Destination dest) {
         super(parent, modal);
         initComponents();
-        
-        if(dest != null){
+
+        if (dest != null) {
             tfZip.setText(dest.getZip());
             tfDest.setText(dest.getName());
         }
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -103,20 +101,21 @@ public class DestinationDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    
+
     private void btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveActionPerformed
-        if(tfDest.getText().equals("")){
+        if (tfDest.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "You can't leave the Name field empty!");
+        } else {
+            newDest = new Destination(tfDest.getText(), tfZip.getText());
+            ok = true;
+
+            dispose();
         }
-        newDest = new Destination(tfDest.getText(), tfZip.getText());
-        ok = true;
-        
-        dispose();
     }//GEN-LAST:event_btSaveActionPerformed
 
     private void btCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelActionPerformed
         ok = false;
-        
+
         dispose();
     }//GEN-LAST:event_btCancelActionPerformed
 

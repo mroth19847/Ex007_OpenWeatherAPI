@@ -7,8 +7,8 @@ public class ForecastResponse {
     private String cod;
     private float message;
     private float cnt;
-    ArrayList<ForecastListObject> list = new ArrayList<>();
-    private City CityObject;
+    ArrayList<ForecastListObject> list;
+    private City city;
 
     public ArrayList<ForecastListObject> getList() {
         return list;
@@ -28,7 +28,7 @@ public class ForecastResponse {
     }
 
     public City getCity() {
-        return CityObject;
+        return city;
     }
 
     // Setter Methods 
@@ -44,7 +44,7 @@ public class ForecastResponse {
         this.cnt = cnt;
     }
 
-    public void setCity(City cityObject) {
-        this.CityObject = cityObject;
+    public void setCity(City city) {
+        this.city = city;
     }
 }

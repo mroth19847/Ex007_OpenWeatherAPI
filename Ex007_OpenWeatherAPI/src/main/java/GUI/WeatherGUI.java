@@ -2,14 +2,21 @@ package GUI;
 
 import BL.Destination;
 import BL.DestinationBL;
+import BL.ForecastListObject;
+import BL.ForecastListObjectModel;
+import BL.ForecastModel;
+import BL.ForecastResponse;
+import BL.Main;
 import BL.OpenWeatherResponse;
 import BL.OpenWeatherResponseModel;
 import BL.WeatherCellRenderer;
 import BL.WeatherModel;
+import BL.Wind;
 import REST.OpenWeatherAPIHandler;
 import XML.XMLAccess;
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -20,12 +27,14 @@ import javax.swing.table.DefaultTableModel;
 public class WeatherGUI extends javax.swing.JFrame {
 
     private DestinationBL bl;
-    private OpenWeatherResponseModel tableM = new OpenWeatherResponseModel();
+    private OpenWeatherResponseModel tableM;
+    private ForecastModel forecastM;
+    private ForecastListObjectModel floM;
     private boolean forecastMode;
 
     public WeatherGUI() {
         initComponents();
-        ResponseTable.setModel(tableM);
+        ForecastPanel.setVisible(false);
         WeatherTable.setRowHeight(35);
         WeatherTable.setDefaultRenderer(Object.class, new WeatherCellRenderer());
         try {
@@ -36,15 +45,31 @@ public class WeatherGUI extends javax.swing.JFrame {
         DestinationList.setModel(bl);
 
         ResponseTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
-                    if(ResponseTable.getSelectedRow()>-1){
-                        updateGUI(tableM.getResponseAt(ResponseTable.getSelectedRow()));
+                    if (ResponseTable.getSelectedRow() > -1) {
+                        if (forecastMode) {
+                            updateGUI2(floM.getObjectAt(ResponseTable.getSelectedRow()));
+                        } else {
+                            updateGUI1(tableM.getResponseAt(ResponseTable.getSelectedRow()));
+                        }
                     }
                 }
             }
         });
+
+        ForecastTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    if (ForecastTable.getSelectedRow() > -1) {
+                        floM = new ForecastListObjectModel(forecastM.getResponseAt(ForecastTable.getSelectedRow()).getList());
+                        ResponseTable.setModel(floM);
+                    }
+                }
+            }
+        });
+        tableM = new OpenWeatherResponseModel();
+        ResponseTable.setModel(tableM);
     }
 
     @SuppressWarnings("unchecked")
@@ -66,6 +91,9 @@ public class WeatherGUI extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         WeatherTable = new javax.swing.JTable();
+        ForecastPanel = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        ForecastTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         lbZip = new javax.swing.JLabel();
         tfZip = new javax.swing.JTextField();
@@ -85,6 +113,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         btChangeMode = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -196,24 +225,52 @@ public class WeatherGUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        ForecastTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane5.setViewportView(ForecastTable);
+
+        javax.swing.GroupLayout ForecastPanelLayout = new javax.swing.GroupLayout(ForecastPanel);
+        ForecastPanel.setLayout(ForecastPanelLayout);
+        ForecastPanelLayout.setHorizontalGroup(
+            ForecastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        ForecastPanelLayout.setVerticalGroup(
+            ForecastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4)
+                    .addComponent(ForecastPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(ForecastPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -456,111 +513,153 @@ public class WeatherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_DestinationListValueChanged
 
     private void btRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunActionPerformed
-        if (tfZip.getText().equals("") && tfDest.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "You cannot leave both fields empty!");
+        if (tfDest.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "You cannot leave the destination field empty!");
         } else {
-            Destination dest = new Destination(tfDest.getText(), tfZip.getText());
-            OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
-            tableM.add(res);
-            updateGUI(res);
+            try {
+                Destination dest = new Destination(tfDest.getText(), tfZip.getText());
+                OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
+                tableM.add(res);
+                updateGUI1(res);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
         }
     }//GEN-LAST:event_btRunActionPerformed
 
     private void btRundSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRundSaveActionPerformed
-        Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
-        try {
-            bl.add(newDest);
-            OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(newDest);
-            tableM.add(res);
-            updateGUI(res);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+        if (forecastMode) {
+            ArrayList<ForecastResponse> list = new ArrayList<>();
+            for (Destination dest : bl.getDestList()) {
+                try {
+                    list.add(OpenWeatherAPIHandler.getForecast(dest));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+            }
+            forecastM = new ForecastModel(list);
+            ForecastTable.setModel(forecastM);
+        } else {
+            Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
+            try {
+                bl.add(newDest);
+                OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(newDest);
+                tableM.add(res);
+                updateGUI1(res);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
         }
-
     }//GEN-LAST:event_btRundSaveActionPerformed
 
     private void btChangeModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btChangeModeActionPerformed
-        if(!forecastMode){
+        if (!forecastMode) {
             forecastMode = true;
             btChangeMode.setText("Change to Normal Mode");
             lbZip.setVisible(false);
             tfZip.setVisible(false);
             btRunAll.setVisible(false);
+            ForecastPanel.setVisible(true);
             lbDest.setText("Travel Day (dd.MM.yyyy)");
             btRun.setText("Run with Travel Day");
             btRundSave.setText("Run without Travel Day");
             jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Forecast", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14)));
+            ResponseTable.setModel(new DefaultTableModel());
         } else {
             forecastMode = false;
             btChangeMode.setText("Change to Forecast Mode");
             lbZip.setVisible(true);
             tfZip.setVisible(true);
             btRunAll.setVisible(true);
+            ForecastPanel.setVisible(false);
             lbDest.setText("Destination Name");
             btRun.setText("Run");
             btRundSave.setText("Run & Save Destination");
             jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Current Weather", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14)));
+            tableM = new OpenWeatherResponseModel();
+            ResponseTable.setModel(tableM);
         }
-        tfTemperature.setBackground(new Color(240,240,240));
+        tfTemperature.setBackground(new Color(240, 240, 240));
         tfTemperature.setForeground(Color.BLACK);
-        tfHumidity.setBackground(new Color(240,240,240));
+        tfTemperature.setText("");
+        tfHumidity.setBackground(new Color(240, 240, 240));
         tfHumidity.setForeground(Color.BLACK);
-        tfWind.setBackground(new Color(240,240,240));
+        tfHumidity.setText("");
+        tfWind.setBackground(new Color(240, 240, 240));
         tfWind.setForeground(Color.BLACK);
-        tableM = new OpenWeatherResponseModel();
-        ResponseTable.setModel(tableM);
+        tfWind.setText("");
+        tfPressure.setText("");
+        ForecastTable.setModel(new DefaultTableModel());
         WeatherTable.setModel(new DefaultTableModel());
     }//GEN-LAST:event_btChangeModeActionPerformed
 
     private void btRunAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunAllActionPerformed
         for (Destination dest : bl.getDestList()) {
-            OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
-            tableM.add(res);
-            updateGUI(res);
+            OpenWeatherResponse res;
+            try {
+                res = OpenWeatherAPIHandler.getCurrentInformation(dest);
+                tableM.add(res);
+                updateGUI1(res);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
         }
     }//GEN-LAST:event_btRunAllActionPerformed
 
-    private void updateGUI(OpenWeatherResponse res) {
-        tfTemperature.setText(String.format("%.2f °C",res.getMain().getTemp()));
+    private void updateGUI1(OpenWeatherResponse res) {
+        tfTemperature.setText(String.format("%.2f °C", res.getMain().getTemp()));
         tfPressure.setText(res.getMain().getPressure() + " hpa");
         tfHumidity.setText(res.getMain().getHumidity() + "%");
-        tfWind.setText(res.getWind().getDeg() + "° @ " + res.getWind().getSpeed() +"m/s");
+        tfWind.setText(res.getWind().getDeg() + "° @ " + res.getWind().getSpeed() + "m/s");
         WeatherTable.setModel(new WeatherModel(res.getWeather()));
-        if(res.getMain().getTemp()<10){
+        manageColors(res.getMain(), res.getWind());
+    }
+
+    private void updateGUI2(ForecastListObject res) {
+        tfTemperature.setText(String.format("%.2f °C", res.getMain().getTemp()));
+        tfPressure.setText(res.getMain().getPressure() + " hpa");
+        tfHumidity.setText(res.getMain().getHumidity() + "%");
+        tfWind.setText(res.getWind().getDeg() + "° @ " + res.getWind().getSpeed() + "m/s");
+        WeatherTable.setModel(new WeatherModel(res.getWeather()));
+        manageColors(res.getMain(), res.getWind());
+    }
+
+    private void manageColors(Main main, Wind wind) {
+        if (main.getTemp() < 10) {
             tfTemperature.setBackground(Color.BLUE);
             tfTemperature.setForeground(Color.WHITE);
-        } else if(res.getMain().getTemp()<18){
+        } else if (main.getTemp() < 18) {
             tfTemperature.setBackground(Color.CYAN);
             tfTemperature.setForeground(Color.BLACK);
-        } else if(res.getMain().getTemp()>35){
+        } else if (main.getTemp() > 35) {
             tfTemperature.setBackground(Color.RED);
             tfTemperature.setForeground(Color.WHITE);
-        } else if(res.getMain().getTemp()>25){
+        } else if (main.getTemp() > 25) {
             tfTemperature.setBackground(Color.ORANGE);
             tfTemperature.setForeground(Color.BLACK);
         } else {
             tfTemperature.setBackground(Color.GREEN);
             tfTemperature.setForeground(Color.BLACK);
         }
-        if(res.getMain().getHumidity()>75){
+        if (main.getHumidity() > 75) {
             tfHumidity.setBackground(Color.BLUE);
             tfHumidity.setForeground(Color.WHITE);
-        } else if(res.getMain().getHumidity()>65){
+        } else if (main.getHumidity() > 65) {
             tfHumidity.setBackground(Color.CYAN);
             tfHumidity.setForeground(Color.BLACK);
         } else {
             tfHumidity.setBackground(Color.ORANGE);
             tfHumidity.setForeground(Color.BLACK);
         }
-        if(res.getWind().getSpeed()<=5){
+        if (wind.getSpeed() <= 5) {
             tfWind.setBackground(Color.GREEN);
             tfWind.setForeground(Color.BLACK);
-        } else if(res.getWind().getSpeed()<=13){
+        } else if (wind.getSpeed() <= 13) {
             tfWind.setBackground(Color.ORANGE);
             tfWind.setForeground(Color.BLACK);
         } else {
             tfWind.setBackground(Color.RED);
-            tfWind.setForeground(Color.WHITE); 
+            tfWind.setForeground(Color.WHITE);
         }
     }
 
@@ -590,6 +689,8 @@ public class WeatherGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> DestinationList;
+    private javax.swing.JPanel ForecastPanel;
+    private javax.swing.JTable ForecastTable;
     private javax.swing.JTable ResponseTable;
     private javax.swing.JTable WeatherTable;
     private javax.swing.JButton btAdd;
@@ -613,6 +714,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel lbDest;
     private javax.swing.JLabel lbZip;
     private javax.swing.JTextField tfDest;

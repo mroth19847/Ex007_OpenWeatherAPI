@@ -38,12 +38,10 @@ public class OpenWeatherResponseModel extends AbstractTableModel{
     public String getColumnName(int column) {
         return colNames[column];
     }
-    
-    public void add(OpenWeatherResponse res){
-        owrList.add(res);
+
+    public void add(OpenWeatherResponse owr){
+        owrList.add(owr);
         fireTableDataChanged();
     }
-
-    
 
 }

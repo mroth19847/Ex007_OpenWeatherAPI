@@ -5,32 +5,35 @@ import java.util.List;
 public class ForecastListObject {
 
     private float dt;
-    private Main MainObject;
+    private Main main;
     private List<Weather> weather;
-    Clouds CloudsObject;
-    Wind WindObject;
-    Sys SysObject;
+    private Clouds clouds;
+    private Wind wind;
+    private Sys sys;
     private String dt_txt;
 
+    public List<Weather> getWeather() {
+        return weather;
+    }
     // Getter Methods 
     public float getDt() {
         return dt;
     }
 
     public Main getMain() {
-        return MainObject;
+        return main;
     }
 
     public Clouds getClouds() {
-        return CloudsObject;
+        return clouds;
     }
 
     public Wind getWind() {
-        return WindObject;
+        return wind;
     }
 
     public Sys getSys() {
-        return SysObject;
+        return sys;
     }
 
     public String getDt_txt() {
@@ -43,19 +46,19 @@ public class ForecastListObject {
     }
 
     public void setMain(Main mainObject) {
-        this.MainObject = mainObject;
+        this.main = mainObject;
     }
 
     public void setClouds(Clouds cloudsObject) {
-        this.CloudsObject = cloudsObject;
+        this.clouds = cloudsObject;
     }
 
     public void setWind(Wind windObject) {
-        this.WindObject = windObject;
+        this.wind = windObject;
     }
 
     public void setSys(Sys sysObject) {
-        this.SysObject = sysObject;
+        this.sys = sysObject;
     }
 
     public void setDt_txt(String dt_txt) {
