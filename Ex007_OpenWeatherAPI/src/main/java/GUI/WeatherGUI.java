@@ -35,6 +35,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     private ForecastModel forecastM;
     private ForecastListObjectModel floM;
     private boolean forecastMode;
+    private boolean travelDayUsed;
 
     public WeatherGUI() {
         initComponents();
@@ -88,6 +89,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         sortTemp = new javax.swing.JMenuItem();
         sortHum = new javax.swing.JMenuItem();
         sortPres = new javax.swing.JMenuItem();
+        compateDest = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -147,6 +149,14 @@ public class WeatherGUI extends javax.swing.JFrame {
             }
         });
         ForecastContextMenu.add(sortPres);
+
+        compateDest.setText("Compare destinations");
+        compateDest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compateDestActionPerformed(evt);
+            }
+        });
+        ForecastContextMenu.add(compateDest);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -567,6 +577,7 @@ public class WeatherGUI extends javax.swing.JFrame {
                 forecastM = new ForecastModel(list);
                 ForecastTable.setModel(forecastM);
                 ResponseTable.setModel(new DefaultTableModel());
+                travelDayUsed = true;
             } catch (DateTimeParseException dtpe) {
                 JOptionPane.showMessageDialog(null, "Wrong date format!");
             }
@@ -599,6 +610,7 @@ public class WeatherGUI extends javax.swing.JFrame {
             forecastM = new ForecastModel(list);
             ForecastTable.setModel(forecastM);
             travelDay = "";
+            travelDayUsed = false;
         } else {
             Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
             try {
@@ -678,6 +690,21 @@ public class WeatherGUI extends javax.swing.JFrame {
     private void sortPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPresActionPerformed
         forecastM.sortByPres();
     }//GEN-LAST:event_sortPresActionPerformed
+
+    private void compateDestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compateDestActionPerformed
+        if(travelDayUsed){
+            if(ForecastTable.getSelectedRows().length == 2){
+                ForecastResponse f1 = forecastM.getResponseAt(ForecastTable.getSelectedRows()[0]);
+                ForecastResponse f2 = forecastM.getResponseAt(ForecastTable.getSelectedRows()[1]);
+                CompareDestGUI form = new CompareDestGUI(f1, f2);
+                form.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "You have to select 2 destinations for this feature!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "You have to use a travel day for this feature!");
+        }
+    }//GEN-LAST:event_compateDestActionPerformed
 
     private void updateGUI1(OpenWeatherResponse res) {
         tfTemperature.setText(String.format("%.2f °C", res.getMain().getTemp()));
@@ -774,6 +801,7 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JButton btRun;
     private javax.swing.JButton btRunAll;
     private javax.swing.JButton btRundSave;
+    private javax.swing.JMenuItem compateDest;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel4;
