@@ -1,6 +1,6 @@
 package GUI;
 
-import BL.Destination;
+import BL.DataClasses.Destination;
 import javax.swing.JOptionPane;
 
 public class DestinationDialog extends javax.swing.JDialog {

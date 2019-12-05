@@ -1,7 +1,7 @@
 package XML;
 
-import BL.Destination;
-import BL.DestinationBL;
+import BL.DataClasses.Destination;
+import BL.Models.DestinationBL;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

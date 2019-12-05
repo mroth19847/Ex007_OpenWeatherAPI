@@ -1,6 +1,6 @@
 package GUI;
 
-import BL.ForecastResponse;
+import BL.Responses.ForecastResponse;
 
 public class CompareDestGUI extends javax.swing.JFrame {
 

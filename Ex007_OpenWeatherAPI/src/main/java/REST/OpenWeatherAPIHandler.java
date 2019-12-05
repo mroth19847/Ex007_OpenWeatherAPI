@@ -1,10 +1,10 @@
 package REST;
 
-import BL.Destination;
-import BL.ForecastListObject;
-import BL.ForecastResponse;
-import BL.OpenWeatherResponse;
-import BL.Weather;
+import BL.DataClasses.Destination;
+import BL.DataClasses.ForecastListObject;
+import BL.Responses.ForecastResponse;
+import BL.Responses.OpenWeatherResponse;
+import BL.DataClasses.Weather;
 import com.google.gson.Gson;
 import java.time.LocalDateTime;
 import javax.ws.rs.client.Client;
