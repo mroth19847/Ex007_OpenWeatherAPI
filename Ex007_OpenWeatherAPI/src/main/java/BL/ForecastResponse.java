@@ -1,5 +1,6 @@
 package BL;
 
+import GUI.WeatherGUI;
 import java.util.ArrayList;
 
 public class ForecastResponse {
@@ -12,6 +13,16 @@ public class ForecastResponse {
 
     public ArrayList<ForecastListObject> getList() {
         return list;
+    }
+    
+    public ArrayList<ForecastListObject> getListObjectsFromTravelDay(){
+        ArrayList<ForecastListObject> list1 = new ArrayList<>();
+        for (ForecastListObject flObj : list) {
+            if(flObj.getDt_txt().contains(WeatherGUI.travelDay)){
+                list1.add(flObj);
+            }
+        }
+        return list1;
     }
 
     // Getter Methods 

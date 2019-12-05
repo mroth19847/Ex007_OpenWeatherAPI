@@ -30,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
 public class WeatherGUI extends javax.swing.JFrame {
 
     private DestinationBL bl;
-    private String travelDay;
+    public static String travelDay;
     private OpenWeatherResponseModel tableM;
     private ForecastModel forecastM;
     private ForecastListObjectModel floM;
@@ -84,6 +84,10 @@ public class WeatherGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ForecastContextMenu = new javax.swing.JPopupMenu();
+        sortTemp = new javax.swing.JMenuItem();
+        sortHum = new javax.swing.JMenuItem();
+        sortPres = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -119,6 +123,30 @@ public class WeatherGUI extends javax.swing.JFrame {
         btRunAll = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         btChangeMode = new javax.swing.JButton();
+
+        sortTemp.setText("Sort by temperature");
+        sortTemp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortTempActionPerformed(evt);
+            }
+        });
+        ForecastContextMenu.add(sortTemp);
+
+        sortHum.setText("Sort by humidity");
+        sortHum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortHumActionPerformed(evt);
+            }
+        });
+        ForecastContextMenu.add(sortHum);
+
+        sortPres.setText("Sort by pressure");
+        sortPres.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortPresActionPerformed(evt);
+            }
+        });
+        ForecastContextMenu.add(sortPres);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -244,6 +272,7 @@ public class WeatherGUI extends javax.swing.JFrame {
 
             }
         ));
+        ForecastTable.setComponentPopupMenu(ForecastContextMenu);
         jScrollPane5.setViewportView(ForecastTable);
 
         javax.swing.GroupLayout ForecastPanelLayout = new javax.swing.GroupLayout(ForecastPanel);
@@ -638,6 +667,18 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btRunAllActionPerformed
 
+    private void sortTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTempActionPerformed
+        forecastM.sortByTemp();
+    }//GEN-LAST:event_sortTempActionPerformed
+
+    private void sortHumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortHumActionPerformed
+        forecastM.sortByHum();
+    }//GEN-LAST:event_sortHumActionPerformed
+
+    private void sortPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPresActionPerformed
+        forecastM.sortByPres();
+    }//GEN-LAST:event_sortPresActionPerformed
+
     private void updateGUI1(OpenWeatherResponse res) {
         tfTemperature.setText(String.format("%.2f °C", res.getMain().getTemp()));
         tfPressure.setText(res.getMain().getPressure() + " hpa");
@@ -721,6 +762,7 @@ public class WeatherGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> DestinationList;
+    private javax.swing.JPopupMenu ForecastContextMenu;
     private javax.swing.JPanel ForecastPanel;
     private javax.swing.JTable ForecastTable;
     private javax.swing.JTable ResponseTable;
@@ -749,6 +791,9 @@ public class WeatherGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel lbDest;
     private javax.swing.JLabel lbZip;
+    private javax.swing.JMenuItem sortHum;
+    private javax.swing.JMenuItem sortPres;
+    private javax.swing.JMenuItem sortTemp;
     private javax.swing.JTextField tfDest;
     private javax.swing.JTextField tfHumidity;
     private javax.swing.JTextField tfPressure;

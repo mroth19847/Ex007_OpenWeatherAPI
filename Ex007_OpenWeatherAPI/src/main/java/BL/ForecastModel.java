@@ -1,6 +1,7 @@
 package BL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
@@ -39,6 +40,21 @@ public class ForecastModel extends AbstractTableModel{
     
     public ForecastResponse getResponseAt(int idx){
         return fList.get(idx);
+    }
+    
+    public void sortByTemp() {
+        Collections.sort(fList, new SortByTemp());
+        fireTableDataChanged();
+    }
+    
+    public void sortByHum() {
+        Collections.sort(fList, new SortByHum());
+        fireTableDataChanged();
+    }
+        
+    public void sortByPres() {
+        Collections.sort(fList, new SortByPres());
+        fireTableDataChanged();
     }
     
     
