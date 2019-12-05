@@ -16,6 +16,14 @@ public class ForecastListObjectModel extends AbstractTableModel{
         }
     }
     
+    public ForecastListObjectModel(ArrayList<ForecastListObject> flList, String date) {
+        for (ForecastListObject obj : flList) {
+            if(obj.getDt_txt().contains(date)){
+                filteredList.add(obj);
+            }
+        }
+    }
+    
     public ForecastListObject getObjectAt(int idx){
         return filteredList.get(idx);
     }

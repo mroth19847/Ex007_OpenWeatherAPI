@@ -16,6 +16,9 @@ import REST.OpenWeatherAPIHandler;
 import XML.XMLAccess;
 import java.awt.Color;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 public class WeatherGUI extends javax.swing.JFrame {
 
     private DestinationBL bl;
+    private String travelDay;
     private OpenWeatherResponseModel tableM;
     private ForecastModel forecastM;
     private ForecastListObjectModel floM;
@@ -62,7 +66,11 @@ public class WeatherGUI extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
                     if (ForecastTable.getSelectedRow() > -1) {
-                        floM = new ForecastListObjectModel(forecastM.getResponseAt(ForecastTable.getSelectedRow()).getList());
+                        if (!travelDay.equals("")) {
+                            floM = new ForecastListObjectModel(forecastM.getResponseAt(ForecastTable.getSelectedRow()).getList(), travelDay);
+                        } else {
+                            floM = new ForecastListObjectModel(forecastM.getResponseAt(ForecastTable.getSelectedRow()).getList());
+                        }
                         ResponseTable.setModel(floM);
                     }
                 }
@@ -513,16 +521,38 @@ public class WeatherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_DestinationListValueChanged
 
     private void btRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunActionPerformed
-        if (tfDest.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "You cannot leave the destination field empty!");
-        } else {
+        if (forecastMode) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             try {
-                Destination dest = new Destination(tfDest.getText(), tfZip.getText());
-                OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
-                tableM.add(res);
-                updateGUI1(res);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
+                String dateStr = tfDest.getText();
+                LocalDate date = LocalDate.parse(dateStr, dtf);
+                travelDay = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                ArrayList<ForecastResponse> list = new ArrayList<>();
+                for (Destination dest : bl.getDestList()) {
+                    try {
+                        list.add(OpenWeatherAPIHandler.getForecast(dest));
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage());
+                    }
+                }
+                forecastM = new ForecastModel(list);
+                ForecastTable.setModel(forecastM);
+                ResponseTable.setModel(new DefaultTableModel());
+            } catch (DateTimeParseException dtpe) {
+                JOptionPane.showMessageDialog(null, "Wrong date format!");
+            }
+        } else {
+            if (tfDest.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "You cannot leave the destination field empty!");
+            } else {
+                try {
+                    Destination dest = new Destination(tfDest.getText(), tfZip.getText());
+                    OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(dest);
+                    tableM.add(res);
+                    updateGUI1(res);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         }
     }//GEN-LAST:event_btRunActionPerformed
@@ -539,6 +569,7 @@ public class WeatherGUI extends javax.swing.JFrame {
             }
             forecastM = new ForecastModel(list);
             ForecastTable.setModel(forecastM);
+            travelDay = "";
         } else {
             Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
             try {
@@ -561,8 +592,8 @@ public class WeatherGUI extends javax.swing.JFrame {
             btRunAll.setVisible(false);
             ForecastPanel.setVisible(true);
             lbDest.setText("Travel Day (dd.MM.yyyy)");
-            btRun.setText("Run with Travel Day");
-            btRundSave.setText("Run without Travel Day");
+            btRun.setText("travel day forecast");
+            btRundSave.setText("5 day forecast");
             jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Forecast", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14)));
             ResponseTable.setModel(new DefaultTableModel());
         } else {
@@ -579,6 +610,7 @@ public class WeatherGUI extends javax.swing.JFrame {
             tableM = new OpenWeatherResponseModel();
             ResponseTable.setModel(tableM);
         }
+        tfDest.setText("");
         tfTemperature.setBackground(new Color(240, 240, 240));
         tfTemperature.setForeground(Color.BLACK);
         tfTemperature.setText("");
