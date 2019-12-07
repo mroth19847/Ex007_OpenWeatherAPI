@@ -4,7 +4,7 @@ import BL.DataClasses.Destination;
 import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 
-public class DestinationBL extends AbstractListModel{
+public class DestinationModel extends AbstractListModel{
 
     private ArrayList<Destination> destList = new ArrayList<>();
 

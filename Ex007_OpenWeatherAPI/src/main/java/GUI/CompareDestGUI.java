@@ -1,14 +1,163 @@
 package GUI;
 
+import BL.DataClasses.ForecastListObject;
+import BL.Models.CompareModel;
+import BL.Models.WeatherModel;
 import BL.Responses.ForecastResponse;
+import GUI.Renderer.WeatherCellRenderer;
+import java.awt.Color;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class CompareDestGUI extends javax.swing.JFrame {
 
+    private CompareModel cModel;
+    private WeatherModel wm1;
+    private WeatherModel wm2;
+    
+    /**
+     * The constructor of the CompareDestGUI fills the TimeTable with the time of the in the WeatherGUI selected travelDay, it also
+     * adds an event for the TimeTable, so that when the selection changes, the weather information of is updated for both responses
+     * @param f1 first selected ForecastResponse 
+     * @param f2 second selected ForecastResponse
+     */
     public CompareDestGUI(ForecastResponse f1, ForecastResponse f2) {
         initComponents();
+        cModel = new CompareModel(f1.getList(), f2.getList(), WeatherGUI.travelDay);
         lbForecast.setText("Forecast for Day: "+WeatherGUI.travelDay);
         lbDest1.setText(f1.getCity().getName());
         lbDest2.setText(f2.getCity().getName());
+        TimeTable.setModel(cModel);
+        TimeTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    if (TimeTable.getSelectedRow() > -1) {
+                        updateGUI(cModel.getObject1At(TimeTable.getSelectedRow()),
+                                  cModel.getObject2At(TimeTable.getSelectedRow()));
+                    }
+                }
+            }
+        });
+        
+        WeatherTable.setDefaultRenderer(Object.class, new WeatherCellRenderer());
+        WeatherTable1.setDefaultRenderer(Object.class, new WeatherCellRenderer());
+        WeatherTable.setRowHeight(35);
+        WeatherTable1.setRowHeight(35);
+
+    }
+    
+    /**
+     * The updateGUI method is for displaying the weather information of two ForecastListObjects in following aspects:
+     *      WeatherTable containing icons and text
+     *      Information values concerning humidity, pressure and temperature
+     *      Coloring the information values:
+     *          Temperature: 
+     *              below 10°C => dark blue
+     *              10°C - 17°C => light blue
+     *              18°C - 25°C => green
+     *              26°C - 35°C => orange
+     *              over 35°C => red
+     *          Humidity:
+     *              over 75% => dark blue
+     *              66% to 75% => light blue
+     *              65% and lower => orange
+     *          Wind Speed:
+     *              5m/s and lower => green
+     *              6m/s - 13m/s => orange
+     *              over 13m/s => red
+     * @param res1 The first ForecastListObject
+     * @param res2 The second ForecastListObject
+     */
+    private void updateGUI(ForecastListObject res1, ForecastListObject res2) {
+        wm1 = new WeatherModel(res1.getWeather());
+        wm2 = new WeatherModel(res2.getWeather());
+        WeatherTable.setModel(wm1);
+        WeatherTable1.setModel(wm2);
+        tfTemperature.setText(String.format("%.2f °C", res1.getMain().getTemp()));
+        tfPressure.setText(res1.getMain().getPressure() + " hpa");
+        tfHumidity.setText(res1.getMain().getHumidity() + "%");
+        tfWind.setText(res1.getWind().getDeg() + "° @ " + res1.getWind().getSpeed() + "m/s");
+        WeatherTable.setModel(new WeatherModel(res1.getWeather()));
+        
+        tfTemperature1.setText(String.format("%.2f °C", res2.getMain().getTemp()));
+        tfPressure1.setText(res2.getMain().getPressure() + " hpa");
+        tfHumidity1.setText(res2.getMain().getHumidity() + "%");
+        tfWind1.setText(res2.getWind().getDeg() + "° @ " + res2.getWind().getSpeed() + "m/s");
+        WeatherTable1.setModel(new WeatherModel(res2.getWeather()));
+        
+        if (res1.getMain().getTemp() < 10) {
+            tfTemperature.setBackground(Color.BLUE);
+            tfTemperature.setForeground(Color.WHITE);
+        } else if (res1.getMain().getTemp() < 18) {
+            tfTemperature.setBackground(Color.CYAN);
+            tfTemperature.setForeground(Color.BLACK);
+        } else if (res1.getMain().getTemp() > 35) {
+            tfTemperature.setBackground(Color.RED);
+            tfTemperature.setForeground(Color.WHITE);
+        } else if (res1.getMain().getTemp() > 25) {
+            tfTemperature.setBackground(Color.ORANGE);
+            tfTemperature.setForeground(Color.BLACK);
+        } else {
+            tfTemperature.setBackground(Color.GREEN);
+            tfTemperature.setForeground(Color.BLACK);
+        }
+        if (res1.getMain().getHumidity() > 75) {
+            tfHumidity.setBackground(Color.BLUE);
+            tfHumidity.setForeground(Color.WHITE);
+        } else if (res1.getMain().getHumidity() > 65) {
+            tfHumidity.setBackground(Color.CYAN);
+            tfHumidity.setForeground(Color.BLACK);
+        } else {
+            tfHumidity.setBackground(Color.ORANGE);
+            tfHumidity.setForeground(Color.BLACK);
+        }
+        if (res1.getWind().getSpeed()<= 5) {
+            tfWind.setBackground(Color.GREEN);
+            tfWind.setForeground(Color.BLACK);
+        } else if (res1.getWind().getSpeed() <= 13) {
+            tfWind.setBackground(Color.ORANGE);
+            tfWind.setForeground(Color.BLACK);
+        } else {
+            tfWind.setBackground(Color.RED);
+            tfWind.setForeground(Color.WHITE);
+        }
+        
+        if (res2.getMain().getTemp() < 10) {
+            tfTemperature1.setBackground(Color.BLUE);
+            tfTemperature1.setForeground(Color.WHITE);
+        } else if (res2.getMain().getTemp() < 18) {
+            tfTemperature1.setBackground(Color.CYAN);
+            tfTemperature1.setForeground(Color.BLACK);
+        } else if (res2.getMain().getTemp() > 35) {
+            tfTemperature1.setBackground(Color.RED);
+            tfTemperature1.setForeground(Color.WHITE);
+        } else if (res2.getMain().getTemp() > 25) {
+            tfTemperature1.setBackground(Color.ORANGE);
+            tfTemperature1.setForeground(Color.BLACK);
+        } else {
+            tfTemperature1.setBackground(Color.GREEN);
+            tfTemperature1.setForeground(Color.BLACK);
+        }
+        if (res2.getMain().getHumidity() > 75) {
+            tfHumidity1.setBackground(Color.BLUE);
+            tfHumidity1.setForeground(Color.WHITE);
+        } else if (res2.getMain().getHumidity() > 65) {
+            tfHumidity1.setBackground(Color.CYAN);
+            tfHumidity1.setForeground(Color.BLACK);
+        } else {
+            tfHumidity1.setBackground(Color.ORANGE);
+            tfHumidity1.setForeground(Color.BLACK);
+        }
+        if (res2.getWind().getSpeed()<= 5) {
+            tfWind1.setBackground(Color.GREEN);
+            tfWind1.setForeground(Color.BLACK);
+        } else if (res2.getWind().getSpeed() <= 13) {
+            tfWind1.setBackground(Color.ORANGE);
+            tfWind1.setForeground(Color.BLACK);
+        } else {
+            tfWind1.setBackground(Color.RED);
+            tfWind1.setForeground(Color.WHITE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -40,7 +189,7 @@ public class CompareDestGUI extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         tfWind1 = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
-        ResponseTable = new javax.swing.JTable();
+        TimeTable = new javax.swing.JTable();
         lbForecast = new javax.swing.JLabel();
         lbDest1 = new javax.swing.JLabel();
         lbDest2 = new javax.swing.JLabel();
@@ -227,7 +376,7 @@ public class CompareDestGUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        ResponseTable.setModel(new javax.swing.table.DefaultTableModel(
+        TimeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -238,7 +387,7 @@ public class CompareDestGUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(ResponseTable);
+        jScrollPane4.setViewportView(TimeTable);
 
         lbForecast.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lbForecast.setText("Forecast for Day: ");
@@ -304,7 +453,7 @@ public class CompareDestGUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable ResponseTable;
+    private javax.swing.JTable TimeTable;
     private javax.swing.JTable WeatherTable;
     private javax.swing.JTable WeatherTable1;
     private javax.swing.JLabel jLabel10;

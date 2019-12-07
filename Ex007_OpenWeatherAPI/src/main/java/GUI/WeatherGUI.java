@@ -1,7 +1,7 @@
 package GUI;
 
 import BL.DataClasses.Destination;
-import BL.Models.DestinationBL;
+import BL.Models.DestinationModel;
 import BL.DataClasses.ForecastListObject;
 import BL.Models.ForecastListObjectModel;
 import BL.Models.ForecastModel;
@@ -29,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class WeatherGUI extends javax.swing.JFrame {
 
-    private DestinationBL bl;
+    private DestinationModel bl;
     public static String travelDay;
     private OpenWeatherResponseModel tableM;
     private ForecastModel forecastM;
@@ -37,6 +37,10 @@ public class WeatherGUI extends javax.swing.JFrame {
     private boolean forecastMode;
     private boolean travelDayUsed;
 
+    /**
+     * The default WeatherGUI constructor sets imports the saved destinations from a xml file and adds selection-changed events
+     * to the ResponseTable and to the ForecastTable
+     */
     public WeatherGUI() {
         initComponents();
         ForecastPanel.setVisible(false);
@@ -45,7 +49,7 @@ public class WeatherGUI extends javax.swing.JFrame {
         try {
             bl = XMLAccess.importXML();
         } catch (Exception ex) {
-            bl = new DestinationBL();
+            bl = new DestinationModel();
         }
         DestinationList.setModel(bl);
 
@@ -500,6 +504,10 @@ public class WeatherGUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * The actionperformed event for btAdd opens the DestinationDialog for adding a new Destination Object to the WeatherBL
+     * @param evt 
+     */
     private void btAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddActionPerformed
         DestinationDialog dlg = new DestinationDialog(this, true, null);
         dlg.setVisible(true);
@@ -512,6 +520,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btAddActionPerformed
 
+    /**
+     * The actionperformed event for btEdit opens the the DestinationDialog with a specific selected destination in order to change
+     * it in the WeatherBL, as long as a destination is selected in the list
+     * @param evt 
+     */
     private void btEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditActionPerformed
         if (DestinationList.getSelectedIndex() < 0) {
             JOptionPane.showMessageDialog(null, "Select an entry!");
@@ -529,6 +542,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btEditActionPerformed
 
+    /**
+     * The actionperformed event for btDelete checks if a destination is selected in the list, and if yes, removes it using the delete
+     * method in the WheaterBL
+     * @param evt 
+     */
     private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed
         if (DestinationList.getSelectedIndex() < 0) {
             JOptionPane.showMessageDialog(null, "Select an entry!");
@@ -541,6 +559,10 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btDeleteActionPerformed
 
+    /**
+     * The formWindowClosing event will save the destinations to a xml file before closing the GUI
+     * @param evt 
+     */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
             XMLAccess.exportXML(bl);
@@ -549,6 +571,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    /**
+     * The DestinationListValueChanged event is for displaying the values of the selected entry in the destnation-name and zip 
+     * textfields
+     * @param evt 
+     */
     private void DestinationListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_DestinationListValueChanged
         if (DestinationList.getSelectedIndex() < 0) {
             JOptionPane.showMessageDialog(null, "Select an entry!");
@@ -559,6 +586,17 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_DestinationListValueChanged
 
+    /**
+     * The actionperformed event of btRun has two functions:
+     * 1 - ForecastMode is enabled:
+     *      The method checks if the inputted date is in the correct format, than it will save it into the travelDay variable
+     *      Then it will get a ForecastResponse for each destination using the OpenWeatherAPIHandler method getForecast() in order to
+     *      display them in the ForecastList - the travelDayUsed boolean is set to true
+     * 2 - ForecastMode is disabled:
+     *      The method will call the OpenWeatherAPIHandler method getCurrentInformation() using the current values in the 
+     *      destination-name and zip textfields
+     * @param evt 
+     */
     private void btRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunActionPerformed
         if (forecastMode) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -596,7 +634,17 @@ public class WeatherGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btRunActionPerformed
-
+   
+    /**
+     * The actionperformed event of btRundSave has two functions:
+     * 1 - ForecastMode is enabled:
+     *      The will get a ForecastResponse for each destination using the OpenWeatherAPIHandler method getForecast() in order to
+     *      display them in the ForecastList - the travelDayUsed boolean is set to false
+     * 2 - ForecastMode is disabled:
+     *      The method will call the OpenWeatherAPIHandler method getCurrentInformation() using the current values in the 
+     *      destination-name and zip textfields and wil try to add them to the WeatherBL
+     * @param evt 
+     */
     private void btRundSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRundSaveActionPerformed
         if (forecastMode) {
             ArrayList<ForecastResponse> list = new ArrayList<>();
@@ -624,6 +672,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btRundSaveActionPerformed
 
+    /**
+     * The actionperformed event of btChangeMode is for changing from the forecast mode to normal mode or the other way around
+     * Every time the event is triggered, the GUI is cleared 
+     * @param evt 
+     */
     private void btChangeModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btChangeModeActionPerformed
         if (!forecastMode) {
             forecastMode = true;
@@ -666,6 +719,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         WeatherTable.setModel(new DefaultTableModel());
     }//GEN-LAST:event_btChangeModeActionPerformed
 
+    /**
+     * The method will call the OpenWeatherAPIHandler method getCurrentInformation() for all destinations in the WeatherBL in order
+     * to show them in the ResponseTable
+     * @param evt 
+     */
     private void btRunAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRunAllActionPerformed
         for (Destination dest : bl.getDestList()) {
             OpenWeatherResponse res;
@@ -679,18 +737,35 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btRunAllActionPerformed
 
+    /**
+     * The actionperformed event of the sortTemp menuItem is for calling the sortByTemp method in the current ForecastModel
+     * @param evt 
+     */
     private void sortTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTempActionPerformed
         forecastM.sortByTemp();
     }//GEN-LAST:event_sortTempActionPerformed
 
+    /**
+     * The actionperformed event of the sortHum menuItem is for calling the sortByHum method in the current ForecastModel
+     * @param evt 
+     */
     private void sortHumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortHumActionPerformed
         forecastM.sortByHum();
     }//GEN-LAST:event_sortHumActionPerformed
 
+    /**
+     * The actionperformed event of the sortPres menuItem is for calling the sortByPres method in the current ForecastModel
+     * @param evt 
+     */
     private void sortPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPresActionPerformed
         forecastM.sortByPres();
     }//GEN-LAST:event_sortPresActionPerformed
 
+    /**
+     * If the travelDayUsed variable is true, the method will check if two ForecastResponses are selected and will open the
+     * CompareDestGUI with the two selected Responses as paramters
+     * @param evt 
+     */
     private void compateDestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compateDestActionPerformed
         if(travelDayUsed){
             if(ForecastTable.getSelectedRows().length == 2){
@@ -706,6 +781,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_compateDestActionPerformed
 
+    /**
+     * The updateGUI1 method is used in normal mode for displaying the Weather Information for a OpenWeatherResponse
+     * It will also cal lthe manageColors method for coloring the textfields
+     * @param res 
+     */
     private void updateGUI1(OpenWeatherResponse res) {
         tfTemperature.setText(String.format("%.2f °C", res.getMain().getTemp()));
         tfPressure.setText(res.getMain().getPressure() + " hpa");
@@ -715,6 +795,11 @@ public class WeatherGUI extends javax.swing.JFrame {
         manageColors(res.getMain(), res.getWind());
     }
 
+    /**
+     * The updateGUI2 method is used in forecast mode for displaying the Weather Information for a ForecastListObject
+     * It will also cal lthe manageColors method for coloring the textfields
+     * @param res 
+     */
     private void updateGUI2(ForecastListObject res) {
         tfTemperature.setText(String.format("%.2f °C", res.getMain().getTemp()));
         tfPressure.setText(res.getMain().getPressure() + " hpa");
@@ -724,6 +809,25 @@ public class WeatherGUI extends javax.swing.JFrame {
         manageColors(res.getMain(), res.getWind());
     }
 
+    /**
+     * The updateGUI method is for coloring the weather information textfields by using the main and the wind parameter
+     *          Temperature: 
+     *              below 10°C => dark blue
+     *              10°C - 17°C => light blue
+     *              18°C - 25°C => green
+     *              26°C - 35°C => orange
+     *              over 35°C => red
+     *          Humidity:
+     *              over 75% => dark blue
+     *              66% to 75% => light blue
+     *              65% and lower => orange
+     *          Wind Speed:
+     *              5m/s and lower => green
+     *              6m/s - 13m/s => orange
+     *              over 13m/s => red
+     * @param main The given Main Object
+     * @param wind The given Wind Object
+     */
     private void manageColors(Main main, Wind wind) {
         if (main.getTemp() < 10) {
             tfTemperature.setBackground(Color.BLUE);

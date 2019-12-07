@@ -1,7 +1,7 @@
 package XML;
 
 import BL.DataClasses.Destination;
-import BL.Models.DestinationBL;
+import BL.Models.DestinationModel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +18,13 @@ import org.jdom2.output.XMLOutputter;
 
 public class XMLAccess {
 
-    public static void exportXML(DestinationBL bl) throws IOException {
+    /**
+     * The exportXML method will create a xml structure using the destination objects from a given DestinationModel and store
+     * it into the destination.xml file
+     * @param bl
+     * @throws IOException 
+     */
+    public static void exportXML(DestinationModel bl) throws IOException {
         ArrayList<Destination> destList = bl.getDestList();
         Element rootElement = new Element("DestinationList");
         Document doc = new Document(rootElement);
@@ -43,7 +49,13 @@ public class XMLAccess {
         xmlOutput.output(doc, System.out);
     }
     
-    public static DestinationBL importXML() throws JDOMException, IOException {
+    /**
+     * The importXML method will return a new DestinationModel packed with destination read in from the destinations.xml file
+     * @return
+     * @throws JDOMException
+     * @throws IOException 
+     */
+    public static DestinationModel importXML() throws JDOMException, IOException {
         ArrayList<Destination> destList = new ArrayList<>();
         File f = new File("xml/destinations.xml");
         SAXBuilder builder = new SAXBuilder();
@@ -52,7 +64,7 @@ public class XMLAccess {
         for (Element elem : root.getChildren()) {
             destList.add(new Destination(elem.getChildText("Name"), elem.getChildText("Zip")));
         }
-        DestinationBL bl = new DestinationBL();
+        DestinationModel bl = new DestinationModel();
         bl.setDestList(destList);
         return bl;
     }

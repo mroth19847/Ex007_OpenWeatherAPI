@@ -48,4 +48,8 @@
     <Name>Peking</Name>
     <Zip />
   </Destination>
+  <Destination>
+    <Name>Vancouver</Name>
+    <Zip />
+  </Destination>
 </DestinationList>

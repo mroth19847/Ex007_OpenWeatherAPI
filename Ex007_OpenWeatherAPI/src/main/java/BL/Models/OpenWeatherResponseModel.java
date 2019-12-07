@@ -20,6 +20,11 @@ public class OpenWeatherResponseModel extends AbstractTableModel{
         return colNames.length;
     }
     
+    /**
+     * Returns a specific OpenWeatherResponse at a given index from the list
+     * @param idx The given index
+     * @return The object at the index from the list
+     */
     public OpenWeatherResponse getResponseAt(int idx){
         return owrList.get(idx);
     }
@@ -40,6 +45,10 @@ public class OpenWeatherResponseModel extends AbstractTableModel{
         return colNames[column];
     }
 
+    /**
+     * Adds a given OpenWeatherResponse at the end of the list and updates it
+     * @param owr The given OpenWeatherResponse - Object
+     */
     public void add(OpenWeatherResponse owr){
         owrList.add(owr);
         fireTableDataChanged();

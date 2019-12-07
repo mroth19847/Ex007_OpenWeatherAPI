@@ -8,6 +8,13 @@ public class DestinationDialog extends javax.swing.JDialog {
     private Destination newDest;
     private boolean ok;
 
+    /**
+     * The constructor for the DestinationDialog checks if the dest paramter is not null and inputs the correct destination name and zip of
+     * the committed Destination Object dest
+     * @param parent
+     * @param modal
+     * @param dest 
+     */
     public DestinationDialog(java.awt.Frame parent, boolean modal, Destination dest) {
         super(parent, modal);
         initComponents();
@@ -101,7 +108,11 @@ public class DestinationDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-
+/**
+ * The actionperformed event of btSave checks if the destination name field is empty and stores a new destination object in
+ * the variable newDest, after that it will close the dialog
+ * @param evt 
+ */
     private void btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveActionPerformed
         if (tfDest.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "You can't leave the Name field empty!");
@@ -113,6 +124,10 @@ public class DestinationDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btSaveActionPerformed
 
+/**
+ * The actionperformed event of btCancel will close the dialog without performing any other actions
+ * @param evt 
+ */    
     private void btCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelActionPerformed
         ok = false;
 

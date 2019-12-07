@@ -17,6 +17,13 @@ public class OpenWeatherAPIHandler {
     private static String URI = "http://api.openweathermap.org/data/2.5/";
     private static String APPID = "39629fbcd91b663dd49aa9bd55a92848";
 
+    /**
+     * The getCurrentInformation method will try to receive a OpenWeatherResponse using the name of the committed destination by using
+     * the OpenWeatherAPI, if the name of the destination is illegal it will throw an exception
+     * @param dest
+     * @return
+     * @throws Exception 
+     */
     public static OpenWeatherResponse getCurrentInformation(Destination dest) throws Exception {
         Client client = ClientBuilder.newClient();
         Response r = client.target(URI)
@@ -35,7 +42,14 @@ public class OpenWeatherAPIHandler {
         }
         return res;
     }
-    
+
+    /**
+     * The getForecast method will try to receive a ForecastResponse using the name of the committed destination by using
+     * the OpenWeatherAPI, if the name of the destination is illegal it will throw an exception
+     * @param dest
+     * @return
+     * @throws Exception 
+     */
     public static ForecastResponse getForecast(Destination dest) throws Exception{
         Client client = ClientBuilder.newClient();
         Response r = client.target(URI)

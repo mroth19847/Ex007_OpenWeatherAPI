@@ -17,6 +17,11 @@ public class ForecastResponse {
         return list;
     }
     
+    /**
+     * The method runs through all stored ForecastListObjects of the response and returns a new list with all objects from
+     * the public static travelDay variable in the WeatherGUI
+     * @return The filtered list
+     */
     public ArrayList<ForecastListObject> getListObjectsFromTravelDay(){
         ArrayList<ForecastListObject> list1 = new ArrayList<>();
         for (ForecastListObject flObj : list) {

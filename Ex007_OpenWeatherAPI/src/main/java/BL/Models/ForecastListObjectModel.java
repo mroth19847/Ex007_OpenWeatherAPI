@@ -9,6 +9,11 @@ public class ForecastListObjectModel extends AbstractTableModel{
     private ArrayList<ForecastListObject> filteredList = new ArrayList<>();
     private String[] colNames = new String[]{"Date", "Time"};
 
+    /**
+     * The first constructor for the ForecastListObjectModel: In order to achieve a better overview, the constructor only saves the
+     * objects taking place at 12:00:00, 09:00:00 and 18:00:00 into the filtered list
+     * @param flList The original list to be shown
+     */
     public ForecastListObjectModel(ArrayList<ForecastListObject> flList) {
         for (ForecastListObject obj : flList) {
             if(obj.getDt_txt().contains("12:00:00")||obj.getDt_txt().contains("09:00:00")||obj.getDt_txt().contains("18:00:00")){
@@ -17,6 +22,12 @@ public class ForecastListObjectModel extends AbstractTableModel{
         }
     }
     
+    /**
+     * The second constructor is triggered by adding a date as a string as an additional parameter, it is used for showing the objects
+     * on a specific date
+     * @param flList The original list to be shown
+     * @param date The selected date
+     */
     public ForecastListObjectModel(ArrayList<ForecastListObject> flList, String date) {
         for (ForecastListObject obj : flList) {
             if(obj.getDt_txt().contains(date)){
@@ -25,6 +36,11 @@ public class ForecastListObjectModel extends AbstractTableModel{
         }
     }
     
+    /**
+     * Returns a specific ForecastListObject at a given index from the list
+     * @param idx The given index
+     * @return The object at the index from the list
+     */
     public ForecastListObject getObjectAt(int idx){
         return filteredList.get(idx);
     }

@@ -9,6 +9,10 @@ public class WeatherModel extends AbstractTableModel{
     private List<Weather> wList;
     private String[] colNames = new String[]{"Main", "Description", "Icon"};
 
+    /**
+     * In order to create a new WeatherModel, you have to commit an already existing wheater list as a paramter
+     * @param wList The given Weather-List
+     */
     public WeatherModel(List<Weather> wList) {
         this.wList = wList;
     }
