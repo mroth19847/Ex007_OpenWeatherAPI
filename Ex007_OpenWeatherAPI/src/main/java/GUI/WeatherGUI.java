@@ -662,8 +662,8 @@ public class WeatherGUI extends javax.swing.JFrame {
         } else {
             Destination newDest = new Destination(tfDest.getText(), tfZip.getText());
             try {
-                bl.add(newDest);
                 OpenWeatherResponse res = OpenWeatherAPIHandler.getCurrentInformation(newDest);
+                bl.add(newDest);
                 tableM.add(res);
                 updateGUI1(res);
             } catch (Exception ex) {
